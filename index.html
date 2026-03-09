@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Tiempo — Fin Silver</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg: #f0f0f0;
+            --card: #ffffff;
+            --text: #1a1a1a;
+            --text-light: #888888;
+            --accent: #555555;
+            --accent-hover: #333333;
+            --border: #e0e0e0;
+            --shadow: 0 2px 20px rgba(0,0,0,0.06);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* HEADER */
+        header {
+            width: 100%;
+            padding: 28px 0;
+            text-align: center;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        header .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            letter-spacing: 6px;
+            line-height: 1.15;
+        }
+
+        header .logo .fin {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        header .logo .silver {
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        /* MAIN */
+        main {
+            width: 100%;
+            max-width: 520px;
+            padding: 40px 20px 60px;
+            flex: 1;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 42px;
+            font-weight: 400;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 14px;
+            font-weight: 300;
+            margin-bottom: 36px;
+        }
+
+        /* INPUT CARD */
+        .input-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .field-label {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .date-input-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .date-field {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .date-field label {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .date-field input, .date-field select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            text-align: center;
+            color: var(--text);
+            background: #fafafa;
+            transition: border-color 0.25s ease;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .date-field input:focus, .date-field select:focus {
+            outline: none;
+            border-color: var(--text);
+            background: #fff;
+        }
+
+        .date-field input::placeholder {
+            color: #ccc;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 13px;
+        }
+
+        /* PRESET TAGS */
+        .presets {
+            margin-bottom: 24px;
+        }
+
+        .presets-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .preset-tag {
+            padding: 8px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            background: transparent;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-light);
+            transition: all 0.25s ease;
+        }
+
+        .preset-tag:hover {
+            border-color: var(--text);
+            color: var(--text);
+        }
+
+        .preset-tag.active {
+            background: var(--text);
+            border-color: var(--text);
+            color: #fff;
+        }
+
+        /* NATIVE DATE INPUT (hidden, used as fallback) */
+        .native-date-wrapper {
+            margin-bottom: 24px;
+        }
+
+        .native-date-wrapper input[type="date"] {
+            width: 100%;
+            padding: 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 15px;
+            color: var(--text);
+            background: #fafafa;
+        }
+
+        /* BUTTON */
+        .btn-main {
+            width: 100%;
+            padding: 16px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-main:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        /* RESULTS */
+        .results-container {
+            display: none;
+        }
+
+        .results-container.visible {
+            display: block;
+        }
+
+        /* MAIN RESULT CARD */
+        .result-main {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px 32px;
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--text);
+        }
+
+        .result-event-label {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .result-big {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 64px;
+            line-height: 1;
+            margin-bottom: 4px;
+            letter-spacing: 2px;
+        }
+
+        .result-big-label {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 300;
+            margin-bottom: 28px;
+        }
+
+        .result-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .breakdown-item {
+            text-align: center;
+        }
+
+        .breakdown-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .breakdown-label {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-light);
+        }
+
+        /* DETAIL CARDS */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .detail-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .detail-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 34px;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .detail-label {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-light);
+        }
+
+        /* FUN FACTS */
+        .facts-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px 32px;
+            margin-bottom: 24px;
+        }
+
+        .facts-header {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .fact-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .fact-row:last-child {
+            border-bottom: none;
+        }
+
+        .fact-icon {
+            font-size: 20px;
+            width: 36px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .fact-text {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--text);
+            padding-left: 12px;
+        }
+
+        .fact-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            flex-shrink: 0;
+            padding-left: 12px;
+        }
+
+        /* NEXT MILESTONE */
+        .milestone-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px 32px;
+            margin-bottom: 24px;
+        }
+
+        .milestone-header {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .milestone-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .milestone-item:last-child {
+            border-bottom: none;
+        }
+
+        .milestone-name {
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        .milestone-info {
+            text-align: right;
+        }
+
+        .milestone-date {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .milestone-days {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+        }
+
+        /* SHARE BUTTON */
+        .btn-share {
+            width: 100%;
+            padding: 16px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: transparent;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-share:hover {
+            border-color: var(--text);
+        }
+
+        .btn-share svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* FOOTER */
+        footer {
+            width: 100%;
+            padding: 24px 0;
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-light);
+        }
+
+        footer strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* NOTIFICATION */
+        .notification {
+            position: fixed;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            z-index: 100;
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            white-space: nowrap;
+        }
+
+        .notification.show {
+            top: 24px;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-container.visible .result-main {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .results-container.visible .details-grid {
+            animation: fadeInUp 0.5s ease 0.1s forwards;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .results-container.visible .facts-card {
+            animation: fadeInUp 0.5s ease 0.2s forwards;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .results-container.visible .milestone-card {
+            animation: fadeInUp 0.5s ease 0.3s forwards;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .results-container.visible .btn-share {
+            animation: fadeInUp 0.5s ease 0.4s forwards;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 480px) {
+            main {
+                padding: 28px 16px 40px;
+            }
+
+            h1 {
+                font-size: 34px;
+            }
+
+            .result-big {
+                font-size: 50px;
+            }
+
+            .breakdown-value {
+                font-size: 26px;
+            }
+
+            .result-breakdown {
+                gap: 16px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .detail-value {
+                font-size: 28px;
+            }
+
+            .date-input-row {
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo"><span class="fin">FIN</span><br><span class="silver">SILVER</span></div>
+    </header>
+
+    <!-- NOTIFICATION -->
+    <div class="notification" id="notification"></div>
+
+    <!-- MAIN -->
+    <main>
+        <h1>Calculadora de Tiempo</h1>
+        <p class="subtitle">Descubrí cuánto tiempo pasó desde una fecha importante</p>
+
+        <!-- INPUT -->
+        <div class="input-card">
+            <div class="field-label">Fecha de inicio</div>
+            <div class="date-input-row">
+                <div class="date-field">
+                    <label>Día</label>
+                    <input type="number" id="inputDay" min="1" max="31" placeholder="20">
+                </div>
+                <div class="date-field">
+                    <label>Mes</label>
+                    <select id="inputMonth">
+                        <option value="" disabled selected>Mes</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+                <div class="date-field">
+                    <label>Año</label>
+                    <input type="number" id="inputYear" min="1900" max="2099" placeholder="2021">
+                </div>
+            </div>
+
+            <button class="btn-main" onclick="calculate()">Calcular</button>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-container" id="results">
+
+            <!-- MAIN RESULT -->
+            <div class="result-main">
+                <div class="result-event-label">Tiempo transcurrido</div>
+                <div class="result-big" id="resultDays">0</div>
+                <div class="result-big-label">días exactos</div>
+                <div class="result-breakdown">
+                    <div class="breakdown-item">
+                        <div class="breakdown-value" id="resultYears">0</div>
+                        <div class="breakdown-label">Años</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-value" id="resultMonths">0</div>
+                        <div class="breakdown-label">Meses</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-value" id="resultExtraDays">0</div>
+                        <div class="breakdown-label">Días</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DETAIL CARDS -->
+            <div class="details-grid">
+                <div class="detail-card">
+                    <div class="detail-value" id="detailTotalMonths">0</div>
+                    <div class="detail-label">Meses totales</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-value" id="detailTotalWeeks">0</div>
+                    <div class="detail-label">Semanas totales</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-value" id="detailTotalHours">0</div>
+                    <div class="detail-label">Horas totales</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-value" id="detailTotalMinutes">0</div>
+                    <div class="detail-label">Minutos totales</div>
+                </div>
+            </div>
+
+            <!-- FUN FACTS -->
+            <div class="facts-card">
+                <div class="facts-header">Datos curiosos</div>
+                <div id="factsContainer"></div>
+            </div>
+
+            <!-- NEXT MILESTONES -->
+            <div class="milestone-card">
+                <div class="milestone-header">Próximos hitos</div>
+                <div id="milestonesContainer"></div>
+            </div>
+
+            <!-- DOWNLOAD PDF -->
+            <button class="btn-share" onclick="downloadPDF()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Descargar PDF
+            </button>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        Grupo <strong>Fin-Silver</strong>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        function calculate() {
+            const day = parseInt(document.getElementById('inputDay').value);
+            const month = parseInt(document.getElementById('inputMonth').value);
+            const year = parseInt(document.getElementById('inputYear').value);
+
+            if (!day || !month || !year) {
+                showNotification('Completá todos los campos de fecha');
+                return;
+            }
+
+            const startDate = new Date(year, month - 1, day);
+            const now = new Date();
+
+            if (startDate > now) {
+                showNotification('La fecha no puede ser en el futuro');
+                return;
+            }
+
+            if (isNaN(startDate.getTime()) || day < 1 || day > 31) {
+                showNotification('Fecha no válida');
+                return;
+            }
+
+            // Exact calculation
+            const totalDays = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+            const totalWeeks = Math.floor(totalDays / 7);
+            const totalHours = totalDays * 24;
+            const totalMinutes = totalHours * 60;
+
+            // Years, months, days breakdown
+            let years = now.getFullYear() - startDate.getFullYear();
+            let months = now.getMonth() - startDate.getMonth();
+            let days = now.getDate() - startDate.getDate();
+
+            if (days < 0) {
+                months--;
+                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += prevMonth.getDate();
+            }
+
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            const totalMonths = years * 12 + months;
+
+            // Update DOM
+            document.getElementById('resultDays').textContent = formatNumber(totalDays);
+            document.getElementById('resultYears').textContent = years;
+            document.getElementById('resultMonths').textContent = months;
+            document.getElementById('resultExtraDays').textContent = days;
+
+            document.getElementById('detailTotalMonths').textContent = formatNumber(totalMonths);
+            document.getElementById('detailTotalWeeks').textContent = formatNumber(totalWeeks);
+            document.getElementById('detailTotalHours').textContent = formatCompact(totalHours);
+            document.getElementById('detailTotalMinutes').textContent = formatCompact(totalMinutes);
+
+            // Fun facts
+            generateFunFacts(totalDays, totalHours, startDate);
+
+            // Milestones
+            generateMilestones(startDate, totalDays);
+
+            // Show results
+            const container = document.getElementById('results');
+            container.classList.remove('visible');
+            void container.offsetWidth;
+            container.classList.add('visible');
+
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function generateFunFacts(totalDays, totalHours, startDate) {
+            const container = document.getElementById('factsContainer');
+            const heartbeats = totalDays * 100000;
+            const breaths = totalDays * 23000;
+            const sleepHours = Math.floor(totalDays * 8);
+            const mealsApprox = totalDays * 3;
+            const earthRotations = totalDays;
+            const moonCycles = (totalDays / 29.53).toFixed(1);
+            const dayOfWeek = startDate.toLocaleDateString('es-AR', { weekday: 'long' });
+            const season = getSeason(startDate);
+
+            const facts = [
+                { icon: '💓', text: 'Latidos de corazón aprox.', value: formatCompact(heartbeats) },
+                { icon: '🌬️', text: 'Respiraciones aprox.', value: formatCompact(breaths) },
+                { icon: '😴', text: 'Horas de sueño aprox.', value: formatCompact(sleepHours) },
+                { icon: '🍽️', text: 'Comidas aprox.', value: formatNumber(mealsApprox) },
+                { icon: '🌍', text: 'Rotaciones de la Tierra', value: formatNumber(earthRotations) },
+                { icon: '🌙', text: 'Ciclos lunares', value: moonCycles },
+                { icon: '📅', text: 'Fue un día', value: dayOfWeek },
+                { icon: '🌤️', text: 'Estación del año', value: season },
+            ];
+
+            container.innerHTML = facts.map(f => `
+                <div class="fact-row">
+                    <div class="fact-icon">${f.icon}</div>
+                    <div class="fact-text">${f.text}</div>
+                    <div class="fact-value">${f.value}</div>
+                </div>
+            `).join('');
+        }
+
+        function generateMilestones(startDate, totalDays) {
+            const container = document.getElementById('milestonesContainer');
+            const now = new Date();
+
+            const dayMilestones = [100, 365, 500, 1000, 1500, 2000, 2500, 3000, 5000, 10000, 15000, 20000, 25000, 30000];
+            const monthMilestones = [
+                { months: 6, label: '6 meses' },
+                { months: 12, label: '1 año' },
+                { months: 24, label: '2 años' },
+                { months: 36, label: '3 años' },
+                { months: 60, label: '5 años' },
+                { months: 120, label: '10 años' },
+                { months: 180, label: '15 años' },
+                { months: 240, label: '20 años' },
+                { months: 300, label: '25 años' },
+                { months: 600, label: '50 años' },
+            ];
+
+            let milestones = [];
+
+            // Day milestones
+            dayMilestones.forEach(d => {
+                if (d > totalDays) {
+                    const targetDate = new Date(startDate);
+                    targetDate.setDate(targetDate.getDate() + d);
+                    const daysUntil = Math.ceil((targetDate - now) / (1000 * 60 * 60 * 24));
+                    if (daysUntil > 0 && daysUntil <= 3650) {
+                        milestones.push({
+                            name: `Día ${formatNumber(d)}`,
+                            date: targetDate,
+                            daysUntil: daysUntil
+                        });
+                    }
+                }
+            });
+
+            // Month/Year milestones
+            monthMilestones.forEach(m => {
+                const targetDate = new Date(startDate);
+                targetDate.setMonth(targetDate.getMonth() + m.months);
+                const daysUntil = Math.ceil((targetDate - now) / (1000 * 60 * 60 * 24));
+                if (daysUntil > 0 && daysUntil <= 3650) {
+                    milestones.push({
+                        name: m.label,
+                        date: targetDate,
+                        daysUntil: daysUntil
+                    });
+                }
+            });
+
+            // Sort and take first 5
+            milestones.sort((a, b) => a.daysUntil - b.daysUntil);
+
+            // Remove duplicates that are very close
+            const filtered = [];
+            milestones.forEach(m => {
+                const isDuplicate = filtered.some(f => Math.abs(f.daysUntil - m.daysUntil) < 3);
+                if (!isDuplicate && filtered.length < 5) {
+                    filtered.push(m);
+                }
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="fact-row"><div class="fact-text" style="color:var(--text-light)">No hay hitos próximos en los siguientes 10 años</div></div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(m => `
+                <div class="milestone-item">
+                    <div class="milestone-name">${m.name}</div>
+                    <div class="milestone-info">
+                        <div class="milestone-days">en ${formatNumber(m.daysUntil)} días</div>
+                        <div class="milestone-date">${m.date.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getSeason(date) {
+            const month = date.getMonth() + 1;
+            // Southern hemisphere (Argentina)
+            if (month >= 3 && month <= 5) return 'Otoño';
+            if (month >= 6 && month <= 8) return 'Invierno';
+            if (month >= 9 && month <= 11) return 'Primavera';
+            return 'Verano';
+        }
+
+        function formatNumber(num) {
+            return num.toLocaleString('es-AR');
+        }
+
+        function formatCompact(num) {
+            if (num >= 1000000000) return (num / 1000000000).toFixed(1) + 'B';
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 100000) return (num / 1000).toFixed(0) + 'K';
+            if (num >= 10000) return (num / 1000).toFixed(1) + 'K';
+            return num.toLocaleString('es-AR');
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const W = 210;
+            const margin = 24;
+            const contentW = W - margin * 2;
+            let y = 20;
+
+            // Colors
+            const black = [26, 26, 26];
+            const gray = [136, 136, 136];
+            const lightGray = [224, 224, 224];
+            const bgGray = [240, 240, 240];
+            const white = [255, 255, 255];
+
+            // Helper: centered text
+            function centerText(text, yPos, size, color, style) {
+                doc.setFontSize(size);
+                doc.setTextColor(...color);
+                if (style) doc.setFont('helvetica', style);
+                else doc.setFont('helvetica', 'normal');
+                doc.text(text, W / 2, yPos, { align: 'center' });
+            }
+
+            // Helper: rounded rect
+            function roundedRect(x, yR, w, h, r, fillColor) {
+                doc.setFillColor(...fillColor);
+                doc.roundedRect(x, yR, w, h, r, r, 'F');
+            }
+
+            // Helper: line
+            function hLine(x1, yL, x2, color) {
+                doc.setDrawColor(...color);
+                doc.setLineWidth(0.3);
+                doc.line(x1, yL, x2, yL);
+            }
+
+            // Helper: check page break
+            function checkPage(needed) {
+                if (y + needed > 280) {
+                    doc.addPage();
+                    y = 20;
+                }
+            }
+
+            // ===== BACKGROUND =====
+            doc.setFillColor(...bgGray);
+            doc.rect(0, 0, W, 297, 'F');
+
+            // ===== HEADER =====
+            centerText('FIN', y, 16, black, 'bold');
+            y += 5;
+            centerText('SILVER', y, 16, gray, 'normal');
+            y += 12;
+            centerText('CALCULADORA DE TIEMPO', y, 22, black, 'bold');
+            y += 7;
+            const dateStr = new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' });
+            centerText('Generado el ' + dateStr, y, 9, gray, 'normal');
+            y += 6;
+
+            // Show selected date
+            const selDay = document.getElementById('inputDay').value;
+            const selMonth = document.getElementById('inputMonth');
+            const selMonthName = selMonth.options[selMonth.selectedIndex].text;
+            const selYear = document.getElementById('inputYear').value;
+            centerText('Desde el ' + selDay + ' de ' + selMonthName + ' de ' + selYear, y, 9, black, 'bold');
+            y += 5;
+            hLine(margin, y, W - margin, lightGray);
+            y += 12;
+
+            // ===== READ DATA FROM DOM =====
+            const totalDays = document.getElementById('resultDays').textContent;
+            const resYears = document.getElementById('resultYears').textContent;
+            const resMonths = document.getElementById('resultMonths').textContent;
+            const resDays = document.getElementById('resultExtraDays').textContent;
+            const detMonths = document.getElementById('detailTotalMonths').textContent;
+            const detWeeks = document.getElementById('detailTotalWeeks').textContent;
+            const detHours = document.getElementById('detailTotalHours').textContent;
+            const detMinutes = document.getElementById('detailTotalMinutes').textContent;
+
+            // ===== MAIN RESULT CARD =====
+            const cardH = 62;
+            roundedRect(margin, y, contentW, cardH, 3, white);
+            // Top accent bar
+            doc.setFillColor(...black);
+            doc.rect(margin, y, contentW, 1.5, 'F');
+
+            centerText('TIEMPO TRANSCURRIDO', y + 12, 8, gray, 'normal');
+            centerText(totalDays, y + 28, 40, black, 'bold');
+            centerText('días exactos', y + 35, 10, gray, 'normal');
+
+            // Breakdown
+            const bY = y + 44;
+            hLine(margin + 16, bY, W - margin - 16, lightGray);
+            const bY2 = bY + 10;
+            const col1 = W / 2 - 30;
+            const col2 = W / 2;
+            const col3 = W / 2 + 30;
+
+            doc.setFontSize(20); doc.setTextColor(...black); doc.setFont('helvetica', 'bold');
+            doc.text(resYears, col1, bY2, { align: 'center' });
+            doc.text(resMonths, col2, bY2, { align: 'center' });
+            doc.text(resDays, col3, bY2, { align: 'center' });
+
+            doc.setFontSize(7); doc.setTextColor(...gray); doc.setFont('helvetica', 'normal');
+            doc.text('AÑOS', col1, bY2 + 5, { align: 'center' });
+            doc.text('MESES', col2, bY2 + 5, { align: 'center' });
+            doc.text('DÍAS', col3, bY2 + 5, { align: 'center' });
+
+            y += cardH + 10;
+
+            // ===== DETAIL CARDS (2x2 grid) =====
+            checkPage(36);
+            const detailW = (contentW - 6) / 2;
+            const detailH = 30;
+            const details = [
+                { value: detMonths, label: 'MESES TOTALES' },
+                { value: detWeeks, label: 'SEMANAS TOTALES' },
+                { value: detHours, label: 'HORAS TOTALES' },
+                { value: detMinutes, label: 'MINUTOS TOTALES' },
+            ];
+
+            for (let i = 0; i < 4; i++) {
+                const col = i % 2;
+                const row = Math.floor(i / 2);
+                const dx = margin + col * (detailW + 6);
+                const dy = y + row * (detailH + 6);
+
+                roundedRect(dx, dy, detailW, detailH, 3, white);
+                doc.setFontSize(22); doc.setTextColor(...black); doc.setFont('helvetica', 'bold');
+                doc.text(details[i].value, dx + detailW / 2, dy + 15, { align: 'center' });
+                doc.setFontSize(6.5); doc.setTextColor(...gray); doc.setFont('helvetica', 'normal');
+                doc.text(details[i].label, dx + detailW / 2, dy + 23, { align: 'center' });
+            }
+
+            y += (detailH + 6) * 2 + 8;
+
+            // ===== FUN FACTS =====
+            checkPage(80);
+            const factRows = document.querySelectorAll('#factsContainer .fact-row');
+            const factsH = 12 + factRows.length * 10 + 4;
+            roundedRect(margin, y, contentW, factsH, 3, white);
+
+            doc.setFontSize(7); doc.setTextColor(...gray); doc.setFont('helvetica', 'normal');
+            doc.text('DATOS CURIOSOS', margin + 12, y + 9);
+
+            let fY = y + 18;
+            factRows.forEach((row, i) => {
+                const icon = row.querySelector('.fact-icon').textContent.trim();
+                const text = row.querySelector('.fact-text').textContent.trim();
+                const value = row.querySelector('.fact-value').textContent.trim();
+
+                doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...black);
+                doc.text(text, margin + 12, fY);
+                doc.setFont('helvetica', 'bold');
+                doc.text(value, W - margin - 12, fY, { align: 'right' });
+
+                if (i < factRows.length - 1) {
+                    hLine(margin + 10, fY + 3, W - margin - 10, [238, 238, 238]);
+                }
+                fY += 10;
+            });
+
+            y += factsH + 8;
+
+            // ===== MILESTONES =====
+            checkPage(70);
+            const milestoneRows = document.querySelectorAll('#milestonesContainer .milestone-item');
+            if (milestoneRows.length > 0) {
+                const mH = 12 + milestoneRows.length * 14 + 4;
+                roundedRect(margin, y, contentW, mH, 3, white);
+
+                doc.setFontSize(7); doc.setTextColor(...gray); doc.setFont('helvetica', 'normal');
+                doc.text('PRÓXIMOS HITOS', margin + 12, y + 9);
+
+                let mY = y + 20;
+                milestoneRows.forEach((row, i) => {
+                    const name = row.querySelector('.milestone-name').textContent.trim();
+                    const daysUntil = row.querySelector('.milestone-days').textContent.trim();
+                    const date = row.querySelector('.milestone-date').textContent.trim();
+
+                    doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(...black);
+                    doc.text(name, margin + 12, mY);
+
+                    doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(...black);
+                    doc.text(daysUntil, W - margin - 12, mY - 2, { align: 'right' });
+
+                    doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.setTextColor(...gray);
+                    doc.text(date, W - margin - 12, mY + 3.5, { align: 'right' });
+
+                    if (i < milestoneRows.length - 1) {
+                        hLine(margin + 10, mY + 6, W - margin - 10, [238, 238, 238]);
+                    }
+                    mY += 14;
+                });
+
+                y += mH + 10;
+            }
+
+            // ===== FOOTER =====
+            checkPage(15);
+            hLine(margin, y, W - margin, lightGray);
+            y += 8;
+            doc.setFontSize(7); doc.setTextColor(...gray); doc.setFont('helvetica', 'normal');
+            const footerText = 'GRUPO ';
+            const footerBold = 'FIN-SILVER';
+            const footerFullW = doc.getTextWidth(footerText) + doc.getTextWidth(footerBold);
+            const footerStartX = (W - footerFullW) / 2 - 1;
+            doc.text(footerText, footerStartX, y);
+            doc.setFont('helvetica', 'bold'); doc.setTextColor(...black);
+            doc.text(footerBold, footerStartX + doc.getTextWidth(footerText) + 0.5, y);
+
+            // Save
+            doc.save('calculadora-tiempo-finsilver.pdf');
+            showNotification('PDF descargado correctamente');
+        }
+
+        function showNotification(message) {
+            const el = document.getElementById('notification');
+            el.textContent = message;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        // Enter key to calculate
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Enter' && !e.target.matches('button')) {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>
